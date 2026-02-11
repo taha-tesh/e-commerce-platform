@@ -9,15 +9,21 @@ const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS configuration - adjust origin if needed
+// CORS configuration - allow local dev and deployed frontend
+const allowedOrigins = [
+    process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    'https://e-commerce-platform-1-mkz8.onrender.com',
+];
+
 app.use(cors({
-    origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
 }));
 
 // Increase JSON body size limit to handle product images (base64)
 // Frontend restricts each image to 2MB and max 5 images => 10MB max
 app.use(express.json({ limit: '10mb' }));
+
 
 // Supabase client (service role for server-side operations)
 const SUPABASE_URL = process.env.SUPABASE_URL;
